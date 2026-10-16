@@ -1,0 +1,68 @@
+"""Student Grading System using object-oriented programming."""
+
+class Student:
+    def __init__(self, student_id, name):
+        self.student_id = student_id
+        self.name = name
+        self.marks = {}
+
+    def add_mark(self, subject, mark):
+        if not 0 <= mark <= 100:
+            raise ValueError('Marks must be between 0 and 100.')
+        self.marks[subject] = mark
+
+    def average(self):
+        return sum(self.marks.values()) / len(self.marks) if self.marks else 0
+
+    def grade(self):
+        if not self.marks:
+            return 'N/A'
+        avg = self.average()
+        return 'A' if avg >= 80 else 'B' if avg >= 70 else 'C' if avg >= 60 else 'D' if avg >= 50 else 'F'
+
+
+class GradingSystem:
+    def __init__(self):
+        self.students = {}
+
+    def add_student(self, student_id, name):
+        if student_id in self.students:
+            raise ValueError('Student ID already exists.')
+        self.students[student_id] = Student(student_id, name)
+
+    def show_results(self):
+        if not self.students:
+            print('No students found.')
+        for student in self.students.values():
+            print(f'{student.student_id} | {student.name} | Marks: {student.marks} | '
+                  f'Average: {student.average():.2f} | Grade: {student.grade()}')
+
+
+def main():
+    system = GradingSystem()
+    while True:
+        print("\n1. Add student  2. Add marks  3. Show results  0. Exit")
+        choice = input("Choose: ").strip()
+        try:
+            if choice == "1":
+                system.add_student(input("Student ID: ").strip(), input("Name: ").strip())
+                print("Student added.")
+            elif choice == "2":
+                sid = input("Student ID: ").strip()
+                if sid not in system.students:
+                    print("Student not found.")
+                    continue
+                system.students[sid].add_mark(input("Subject: ").strip(), float(input("Marks (0-100): ")))
+                print("Marks saved.")
+            elif choice == "3":
+                system.show_results()
+            elif choice == "0":
+                break
+            else:
+                print("Invalid option.")
+        except ValueError as exc:
+            print(f"Error: {exc}")
+
+
+if __name__ == "__main__":
+    main()
